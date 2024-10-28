@@ -3,8 +3,11 @@
 (*----------------------------------------------------------------------------*]
  Definirajte pomožno funkcijo za obračanje seznamov.
 [*----------------------------------------------------------------------------*)
-
-let rec reverse = ()
+let sez1 = [1;2;3;4;5]
+let rec reverse seznam = 
+  match seznam with
+  | [] -> []
+  | x :: xs -> reverse xs @ [x]
 
 (*----------------------------------------------------------------------------*]
  Funkcija [repeat x n] vrne seznam [n] ponovitev vrednosti [x]. Za neprimerne
@@ -16,7 +19,10 @@ let rec reverse = ()
  - : string list = []
 [*----------------------------------------------------------------------------*)
 
-let rec repeat = ()
+let rec repeat x n = 
+  if n <= 0 then []
+  else 
+    x :: repeat x (n - 1)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [range] sprejme število in vrne seznam vseh celih števil od 0 do
@@ -28,7 +34,10 @@ Pri tem ne smete uporabbiti vgrajene funkcije [List.init].
  - : int list = [0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10]
 [*----------------------------------------------------------------------------*)
 
-let rec range = ()
+let rec range n =
+  if n < 0 then []
+  else 
+    range (n - 1) @ [n]
 
 (*----------------------------------------------------------------------------*]
  Funkcija [map f list] sprejme seznam [list] oblike [x0; x1; x2; ...] in
@@ -41,7 +50,10 @@ let rec range = ()
  - : int list = [2; 3; 4; 5; 6]
 [*----------------------------------------------------------------------------*)
 
-let rec map = ()
+let rec map f seznam = 
+  match seznam with
+  | [] -> []
+  | x :: xs -> (f x) :: map f xs
 
 (*----------------------------------------------------------------------------*]
  Časovna zahtevnost operatorja [@] je linearna v prvem argumentu, poskušajte 
@@ -49,7 +61,20 @@ let rec map = ()
  Pri tem ne smete uporabiti vgrajene funkcije [List.rev] ali [List.rev_append].
 [*----------------------------------------------------------------------------*)
 
-let rec reverse = ()
+let reverse_boljsi to_reverse =
+  let rec reverse1 kup_za_obracanje nalozen_kup =
+    match kup_za_obracanje with
+    | [] -> nalozen_kup
+    | x :: xs -> reverse1 xs (x :: nalozen_kup)
+  in reverse1 to_reverse []
+
+let sum_better =
+  let rec sum sez acc = 
+    match sez with
+    | [] -> 0
+    | x :: xs -> sum xs (acc + x)
+  in
+  sum sez 0
 
 (*----------------------------------------------------------------------------*]
  Funkcija [map_tlrec] je repno rekurzivna različica funkcije [map].
