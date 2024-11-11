@@ -19,13 +19,13 @@
  Namig: Občudujte informativnost tipov funkcij.
 [*----------------------------------------------------------------------------*)
 
-type euro 
+type euro = float
 
-type dollar 
+type dollar = float
 
-let dollar_to_euro _ = ()
+let dollar_to_euro (x : dollar) = (x *. 0.92 : euro)
 
-let euro_to_dollar _ = ()
+let euro_to_dollar (x : euro) = (x *. 1.08 : dollar)
 
 (* let primer_valute_1 = dollar_to_euro (Dollar 0.5) *)
 (* val primer_valute_1 : euro = Euro 0.4305 *)
@@ -39,9 +39,12 @@ let euro_to_dollar _ = ()
  Ocaml sam opozori, da je potrebno popraviti funkcijo `to_pound`.
 [*----------------------------------------------------------------------------*)
 
-type currency 
+type currency = Yen of float | Pound of float | Krona of float
 
-let to_pound _ = ()
+let to_pound = function
+  | Pound x -> Pound x
+  | Yen x -> Pound (x *. 0.007)
+  | Krona x -> Pound (x *. 0.085)
 
 (* let primer_valute_2 = to_pound (Yen 100.) *)
 (* val primer_valute_2 : currency = Pound 0.700000000000000067 *)
@@ -69,9 +72,12 @@ let to_pound _ = ()
  Nato napišite testni primer, ki bi predstavljal `[5; true; false; 7]`.
 [*----------------------------------------------------------------------------*)
 
-type intbool_list 
+type intbool_list = 
+| Nil
+| Int of int * intbool_list
+| Bool of bool * intbool_list
 
-let test = ()
+let primer = Int (5, Bool(true, Bool(false, Int(7, Nil))))
 
 (*----------------------------------------------------------------------------*
  Funkcija `intbool_map f_int f_bool ib_list` preslika vrednosti `ib_list` v nov
@@ -79,14 +85,22 @@ let test = ()
  oz. `f_bool`.
 [*----------------------------------------------------------------------------*)
 
-let rec intbool_map _ _ _ = ()
+let rec intbool_map f_int f_bool = function
+| Nil -> Nil
+| Int (i, ib_list) -> Int (f_int i, intbool_map f_int f_bool ib_list)
+| Bool (b, ib_list) -> Bool (f_bool b, intbool_map f_int f_bool ib_list)
 
 (*----------------------------------------------------------------------------*
  Funkcija `intbool_reverse` obrne vrstni red elementov `intbool_list` seznama.
  Funkcija je repno rekurzivna.
 [*----------------------------------------------------------------------------*)
-
-let rec intbool_reverse _ = ()
+let rec intbool_reverse ib_list =
+  let rec ib_reverse acc = function
+  | Int(x, xs) -> ib_reverse (Int(x, acc)) xs
+  | Bool(x, xs) -> ib_reverse (Bool(x, acc)) xs
+  | Nil -> acc
+  in
+  ib_reverse Nil ib_list
 
 (*----------------------------------------------------------------------------*
  Funkcija `intbool_separate ib_list` loči vrednosti `ib_list` v par `list`
@@ -94,7 +108,13 @@ let rec intbool_reverse _ = ()
  vrednosti. Funkcija je repno rekurzivna in ohranja vrstni red elementov.
 [*----------------------------------------------------------------------------*)
 
-let rec intbool_separate _ = ()
+let rec intbool_separate ib_list =
+  let rec ib_separate iacc bacc = function
+  | Int(x, xs) -> ib_separate (x :: iacc) bacc xs
+  | Bool(x, xs) -> ib_separate iacc (x :: bacc) xs
+  | Nil -> (iacc, bacc)
+  in
+  ib_separate [] [] (intbool_reverse ib_list)
 
 (*----------------------------------------------------------------------------*
  ## Čarodeji
