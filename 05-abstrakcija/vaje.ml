@@ -20,9 +20,12 @@ module type NAT = sig
 
   val eq  : t -> t -> bool
   val zero : t
-  (* Dodajte manjkajoče! *)
-  (* val to_int : t -> int *)
-  (* val of_int : int -> t *)
+  val one : t 
+  val add : t -> t -> t
+  val sub : t -> t -> t
+  val mul : t -> t -> t
+  val to_int : t -> int
+  val of_int : int -> t
 end
 
 (*----------------------------------------------------------------------------*
@@ -34,11 +37,17 @@ end
 [*----------------------------------------------------------------------------*)
 
 module Nat_int : NAT = struct
-
   type t = int
-  let eq x y = failwith "later"
+
+  let eq x y = x = y
   let zero = 0
-  (* Dodajte manjkajoče! *)
+
+  let one = 1
+  let add x y = x + y
+  let sub x y = x - y
+  let mul x y = x * y
+  let to_int x = x
+  let of_int x = max 0 x 
 
 end
 
@@ -53,10 +62,45 @@ end
 
 module Nat_peano : NAT = struct
 
-  type t = unit (* To morate spremeniti! *)
-  let eq x y = failwith "later"
-  let zero = () (* To morate spremeniti! *)
-  (* Dodajte manjkajoče! *)
+  type t =
+  | Zero
+  | Succ of t
+
+  let rec eq x y = match x, y with
+  | Zero, Zero -> true
+  | Succ _, Zero -> false
+  | Zero, Succ _ -> false
+  | Succ x', Succ y' -> eq x' y' 
+  let zero = Zero
+
+  let one = Succ Zero
+
+  let rec add (x : t) (y : t) : t =
+    match x with
+    | Zero -> y
+    | Succ x' -> Succ (add x' y)
+
+  let rec sub (x : t) (y : t) : t =
+    match x, y with
+    | Zero, _ -> Zero
+    | _, Zero -> x
+    | Succ x', Succ y' -> sub x' y'
+
+  
+  let rec mul (x : t) (y : t) : t =
+    match x with
+    | Zero -> Zero
+    | Succ x' -> add y (mul x' y)
+
+  let rec to_int (x : t) =
+    let rec aux acc = function
+    | Zero -> acc 
+    | Succ x' -> aux (acc + 1) x'
+  in aux 0 x
+
+  let rec of_int (n : int) : t =
+    if n <= 0 then Zero
+    else Succ (of_int (n - 1))
 
 end
 
@@ -77,11 +121,15 @@ end
 [*----------------------------------------------------------------------------*)
 
 let sum_nat_100 = 
-  (* let module Nat = Nat_int in *)
-  let module Nat = Nat_peano in
-  Nat.zero (* to popravite na ustrezen izračun *)
-  (* |> Nat.to_int *)
-(* val sum_nat_100 : int = 5050 *)
+  let module Nat = Nat_int in 
+  let open Nat in
+  let rec sum_aux acc n =
+    if eq n zero then acc
+    else sum_aux (add acc n) (sub n one)
+  in
+  let hundred = of_int 100 in
+  let result = sum_aux zero hundred in
+  to_int result
 
 (*----------------------------------------------------------------------------*
  ## Kompleksna števila
