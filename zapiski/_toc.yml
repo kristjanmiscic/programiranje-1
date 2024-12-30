@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 format: jb-book
 root: 00-uvod.md
 parts:
@@ -24,3 +25,33 @@ parts:
 - caption: Domače naloge
   chapters:
   - file: dn-1.ipynb
+=======
+format: jb-book
+root: 00-uvod.md
+parts:
+- caption: Funkcijsko programiranje
+  chapters:
+  # - file: 01-racunalniska-arhitektura.md
+  - file: 02-uvod-v-funkcijsko-programiranje.ipynb
+  - file: 03-rekurzija.ipynb
+  - file: 04-podatkovni-tipi.ipynb
+  - file: 05-abstrakcija.ipynb
+# - caption: Dokazovalniki
+  # chapters:
+  # - file: 06-curry-howardov-izomorfizem.md
+  # - file: 07-uvod-v-lean.md
+  # - file: 08-induktivni-tipi.md
+- caption: Podatkovne strukture in algoritmi
+  chapters:
+  - file: 09-izracunljivost.md
+  # - file: 10-racunska-zahtevnost.md
+  - file: 11-iskalna-drevesa.md
+  - file: 12-deli-in-vladaj.md
+  # - file: 13-01-dinamicno-programiranje.md
+  # - file: 13-02-memoizacija-v-pythonu.md
+  # - file: 13-03-memoizacija-v-ocamlu.md
+- caption: Domače naloge
+  chapters:
+  - file: dn-1.ipynb
+  - file: dn-2.ipynb
+>>>>>>> 0cbcb5510866b7801b4f8e737c254078c92e72f6
